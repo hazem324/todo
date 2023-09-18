@@ -12,6 +12,10 @@ class AddTaskPageState extends State<AddTaskPage> {
   final titleController = TextEditingController();
   final noteController = TextEditingController();
   DateTime selectedDate = DateTime.now();
+  String startTime = DateFormat("hh:mm a").format(DateTime.now()).toString();
+  String endTime = DateFormat("hh:mm a")
+      .format(DateTime.now().add(const Duration(minutes: 5)))
+      .toString();
 
   @override
   Widget build(BuildContext context) {
@@ -59,11 +63,51 @@ class AddTaskPageState extends State<AddTaskPage> {
                   onPressed: () {
                     takeDateFromUser();
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.calendar_month,
                     color: Colors.deepPurple,
                   ),
                 )),
+            Row(
+              children: [
+                // start time
+                Expanded(
+                  child: MyTextField(
+                    title: "Start Time",
+                    hintText: startTime,
+                    widget: IconButton(
+                      onPressed: () {
+                        getTimeFromUser(isStartTime: true);
+                      },
+                      icon: const Icon(
+                        Icons.watch_later,
+                        color: Colors.deepPurple,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+
+                // end time
+                Expanded(
+                  child: MyTextField(
+                    title: "End Time",
+                    hintText: endTime,
+                    widget: IconButton(
+                      onPressed: () {
+                       getTimeFromUser(isStartTime: false);
+                      },
+                      icon: const Icon(
+                        Icons.watch_later,
+                        color: Colors.deepPurple,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )
           ]),
         ),
       )),
@@ -86,7 +130,8 @@ class AddTaskPageState extends State<AddTaskPage> {
 
   Future<void> takeDateFromUser() async {
     DateTime currentDate = DateTime.now();
-  DateTime twoYearsFromNow = currentDate.add(Duration(days: 730)); 
+    DateTime twoYearsFromNow = currentDate.add(Duration(days: 730));
+
     DateTime? pickedDateFirst = await showDatePicker(
       context: context,
       initialDate: selectedDate,
@@ -100,5 +145,33 @@ class AddTaskPageState extends State<AddTaskPage> {
 
       print("first date is $selectedDate");
     }
+  }
+
+
+
+  getTimeFromUser({required bool isStartTime})async {
+    var pickedTime = await _showTimePicker();
+    String formatedTime = pickedTime.format(context);
+    if (pickedTime == null) {
+      print("canceld time");
+    } else if (isStartTime == true) {
+      setState(() {
+        startTime = formatedTime;
+      });
+    } else if (isStartTime == false) {
+      setState(() {
+        endTime = formatedTime;
+      });
+    }
+  }
+
+  _showTimePicker() {
+    return showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: int.parse(startTime.split(":")[0]),
+      minute: int.parse(startTime.split(":")[1].split(" ")[0])
+      ),
+      initialEntryMode: TimePickerEntryMode.input,
+    );
   }
 }
