@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:todo/home_page.dart';
+import 'package:todo/screen.dart/add_task.dart';
+import 'package:todo/screen.dart/home_page.dart';
 import 'package:todo/pages_name.dart';
 
 void main() {
@@ -18,7 +19,8 @@ class MyApp extends StatelessWidget {
       ),
      initialRoute:  homePage ,
      routes: {
-      homePage : (context) =>  HomePage()
+      homePage : (context) =>  HomePage(),
+      addTaskPage : (context) => AddTaskPage(),
      },
     );
   }
