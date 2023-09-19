@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // ignore: must_be_immutable
-class MyTextField extends StatelessWidget {
+class MyTextFieldCon extends StatelessWidget {
   final widget;
   String title;
   String hintText;
-  final myController;
+   TextEditingController myController = TextEditingController() ;
 
-  MyTextField(
+  MyTextFieldCon(
       {super.key,
       required this.title,
       required this.hintText,
-      this.myController,
+     required this.myController ,
       this.widget});
 
   @override
@@ -44,7 +44,7 @@ class MyTextField extends StatelessWidget {
                     
                     readOnly: widget == null? false : true,
                       autofocus: false,
-                      controller: myController,
+                      controller: myController ,
                       decoration: InputDecoration(
                           enabledBorder: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(20)),

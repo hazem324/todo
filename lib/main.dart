@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:todo/screen.dart/add_task.dart';
-import 'package:todo/screen.dart/home_page.dart';
+import 'package:todo/view/screen.dart/add_task.dart';
+import 'package:todo/view/screen.dart/home_page.dart';
 import 'package:todo/pages_name.dart';
 
 void main() {

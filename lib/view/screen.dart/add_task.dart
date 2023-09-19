@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:todo/data/list_data.dart';
-import 'package:todo/widgets/dropdown_widget.dart';
-import 'package:todo/widgets/elevation_button.dart';
-import 'package:todo/widgets/text_field.dart';
+import 'package:todo/model/task_model.dart';
+import 'package:todo/view/widgets/dropdown_widget.dart';
+import 'package:todo/view/widgets/elevation_button.dart';
+import 'package:todo/view/widgets/text_control_field.dart';
+import 'package:todo/view/widgets/text_field.dart';
 
 class AddTaskPage extends StatefulWidget {
   @override
@@ -12,8 +14,8 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class AddTaskPageState extends State<AddTaskPage> {
-  final titleController = TextEditingController();
-  final noteController = TextEditingController();
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController noteController = TextEditingController();
   DateTime selectedDate = DateTime.now();
   String startTime = DateFormat("hh:mm a").format(DateTime.now()).toString();
   String endTime = DateFormat("hh:mm a")
@@ -50,29 +52,30 @@ class AddTaskPageState extends State<AddTaskPage> {
             const SizedBox(
               height: 10,
             ),
-            MyTextField(
+            MyTextFieldCon(
               title: 'Title',
               hintText: 'Add Title',
               myController: titleController,
             ),
-            MyTextField(
+            MyTextFieldCon(
               title: 'Note',
               hintText: 'Add Note',
               myController: noteController,
             ),
             MyTextField(
-                title: 'Date',
-                hintText:
-                    DateFormat('MM-dd-yyyy').format(selectedDate).toString(),
-                widget: IconButton(
-                  onPressed: () {
-                    takeDateFromUser();
-                  },
-                  icon: const Icon(
-                    Icons.calendar_month,
-                    color: Colors.deepPurple,
-                  ),
-                )),
+              title: 'Date',
+              hintText:
+                  DateFormat('MM-dd-yyyy').format(selectedDate).toString(),
+              widget: IconButton(
+                onPressed: () {
+                  takeDateFromUser();
+                },
+                icon: const Icon(
+                  Icons.calendar_month,
+                  color: Colors.deepPurple,
+                ),
+              ),
+            ),
             Row(
               children: [
                 // start time
@@ -148,14 +151,15 @@ class AddTaskPageState extends State<AddTaskPage> {
                   }).toList(),
                   selectedValue: selectedRepeat,
                 )),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Text(
                           "Colors",
                           style: latoTextStyle(
@@ -170,9 +174,9 @@ class AddTaskPageState extends State<AddTaskPage> {
                         children: List<Widget>.generate(4, (int index) {
                       return InkWell(
                         onTap: () {
-                         setState(() {
+                          setState(() {
                             selectedColor = index;
-                         });
+                          });
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(left: 8.0),
@@ -185,14 +189,28 @@ class AddTaskPageState extends State<AddTaskPage> {
                                     : index == 2
                                         ? Colors.blueAccent
                                         : Colors.deepOrangeAccent,
-                                        child: selectedColor==index?const Icon(Icons.done, color: Colors.white, size: 16,): Container(),
+                            child: selectedColor == index
+                                ? const Icon(
+                                    Icons.done,
+                                    color: Colors.white,
+                                    size: 16,
+                                  )
+                                : Container(),
                           ),
                         ),
                       );
                     }))
                   ],
                 ),
-                 ButtonElevationWidget(titel: ' Creat Task ', onPressed: (){}, backColor: Colors.purple, textColor: Colors.white, borderColor: Colors.white,)
+                ButtonElevationWidget(
+                  titel: ' Creat Task ',
+                  onPressed: () {
+                    validData();
+                  },
+                  backColor: Colors.purple,
+                  textColor: Colors.white,
+                  borderColor: Colors.white,
+                )
               ],
             )
           ]),
@@ -258,5 +276,32 @@ class AddTaskPageState extends State<AddTaskPage> {
           minute: int.parse(startTime.split(":")[1].split(" ")[0])),
       initialEntryMode: TimePickerEntryMode.input,
     );
+  }
+
+  validData() {
+    if (titleController.text.isNotEmpty && noteController.text.isNotEmpty) {
+      addTaskTodb();
+      Navigator.pop(context);
+    } else if (titleController.text.isEmpty || noteController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Center(child: Text("Required files  ")),
+          duration: Duration(seconds: 2),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  addTaskTodb() {
+    TaskModel(
+        title: titleController.text,
+        notes: noteController.text,
+        isCompleted: 0,
+        date: DateFormat('MM-dd-yyyy').format(selectedDate),
+        startTime: startTime,
+        endTime: endTime,
+        remind: selectedRemind,
+        repeat: selectedRepeat, color: selectedColor);
   }
 }
