@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:todo/data/list_data.dart';
 import 'package:todo/widgets/dropdown_widget.dart';
+import 'package:todo/widgets/elevation_button.dart';
 import 'package:todo/widgets/text_field.dart';
 
 class AddTaskPage extends StatefulWidget {
@@ -20,6 +21,7 @@ class AddTaskPageState extends State<AddTaskPage> {
       .toString();
   int selectedRemind = 5;
   String selectedRepeat = "Nope";
+  int selectedColor = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +38,7 @@ class AddTaskPageState extends State<AddTaskPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 10, left: 10, bottom: 7),
                   child: Text(
-                    "Add Task",
+                    " Add Task",
                     style: latoTextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.w800,
@@ -112,40 +114,87 @@ class AddTaskPageState extends State<AddTaskPage> {
               ],
             ),
             MyTextField(
-                title: "Remind ",
-                hintText: " $selectedRemind minutes early",
-                widget:
-                WidgetDropdownButton(
- 
-  onChanged: (String? newValue) {
-    setState(() {
-      selectedRemind = int.parse(newValue!);
-    });
-  },
-  selectedValue: selectedRemind.toString(),
-  items: MyData.reminList.map((e) {
-    return DropdownMenuItem<String>(
-      value: e.toString(),
-      child: Text(e.toString()),
-    );
-  }).toList(),
-),       
-                ),
+              title: "Remind ",
+              hintText: " $selectedRemind minutes early",
+              widget: WidgetDropdownButton(
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedRemind = int.parse(newValue!);
+                  });
+                },
+                selectedValue: selectedRemind.toString(),
+                items: MyData.reminList.map((e) {
+                  return DropdownMenuItem<String>(
+                    value: e.toString(),
+                    child: Text(e.toString()),
+                  );
+                }).toList(),
+              ),
+            ),
             MyTextField(
                 title: "Repeat ",
                 hintText: selectedRepeat,
-                widget:WidgetDropdownButton(
+                widget: WidgetDropdownButton(
                   onChanged: (String? value) {
-                     setState(() {
+                    setState(() {
                       selectedRepeat = value!;
-
-                    }); }, items:MyData.repeatedList.map<DropdownMenuItem<String>>((e) {
+                    });
+                  },
+                  items: MyData.repeatedList.map<DropdownMenuItem<String>>((e) {
                     return DropdownMenuItem<String>(
                       value: e.toString(),
                       child: Text(e.toString()),
                     );
-                  }).toList(), selectedValue: selectedRepeat,)
+                  }).toList(),
+                  selectedValue: selectedRepeat,
+                )),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        SizedBox(width: 8),
+                        Text(
+                          "Colors",
+                          style: latoTextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Wrap(
+                        children: List<Widget>.generate(4, (int index) {
+                      return InkWell(
+                        onTap: () {
+                         setState(() {
+                            selectedColor = index;
+                         });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: CircleAvatar(
+                            radius: 14,
+                            backgroundColor: index == 0
+                                ? Colors.amber
+                                : index == 1
+                                    ? Colors.pink
+                                    : index == 2
+                                        ? Colors.blueAccent
+                                        : Colors.deepOrangeAccent,
+                                        child: selectedColor==index?const Icon(Icons.done, color: Colors.white, size: 16,): Container(),
+                          ),
+                        ),
+                      );
+                    }))
+                  ],
                 ),
+                 ButtonElevationWidget(titel: ' Creat Task ', onPressed: (){}, backColor: Colors.purple, textColor: Colors.white, borderColor: Colors.white,)
+              ],
+            )
           ]),
         ),
       )),

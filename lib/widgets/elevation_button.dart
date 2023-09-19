@@ -3,22 +3,24 @@ import 'package:flutter/material.dart';
 class ButtonElevationWidget extends StatelessWidget {
   final String titel;
   final Function onPressed;
+    final Color? backColor;
+  final Color? borderColor;
+  final Color? textColor;
 
-  ButtonElevationWidget({required this.titel, required this.onPressed});
+  ButtonElevationWidget({required this.titel, required this.onPressed, this.backColor,this.textColor, this.borderColor});
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return ElevatedButton(
-      onPressed: () => onPressed()
-      ,
+      onPressed: () => onPressed(),
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
+        backgroundColor:backColor ?? Colors.white,
         padding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(size.height / 53.6),
           side:
-              BorderSide(width: size.width / 330.833, color: Colors.deepPurple),
+              BorderSide(width: size.width / 330.833, color:borderColor ?? Colors.deepPurple),
         ),
       ),
       child: Container(
@@ -30,17 +32,14 @@ class ButtonElevationWidget extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(size.height / 53.6)),
         ),
-        child: Row(
-          children: [
-            Icon(Icons.add),
+        child: 
             Center(
               child: Text(
                 titel,
-                style: const TextStyle(fontSize: 18, color:Colors.deepPurple),
+                style:  TextStyle(fontSize: 18, color: textColor ?? Colors.deepPurple),
               ),
             ),
-          ],
-        ),
+         
       ),
     );
   }

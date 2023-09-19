@@ -42,7 +42,7 @@ class HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.only(top: 8, right: 10, bottom: 8),
               child: ButtonElevationWidget(
-                  titel: "Add Task",
+                  titel: " + Add Task",
                   onPressed: () {
                     Navigator.pushNamed(
                       context,
