@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:todo/data/list_data.dart';
+import 'package:todo/widgets/dropdown_widget.dart';
 import 'package:todo/widgets/text_field.dart';
 
 class AddTaskPage extends StatefulWidget {
@@ -16,7 +18,8 @@ class AddTaskPageState extends State<AddTaskPage> {
   String endTime = DateFormat("hh:mm a")
       .format(DateTime.now().add(const Duration(minutes: 5)))
       .toString();
-
+  int selectedRemind = 5;
+  String selectedRepeat = "Nope";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,7 +100,7 @@ class AddTaskPageState extends State<AddTaskPage> {
                     hintText: endTime,
                     widget: IconButton(
                       onPressed: () {
-                       getTimeFromUser(isStartTime: false);
+                        getTimeFromUser(isStartTime: false);
                       },
                       icon: const Icon(
                         Icons.watch_later,
@@ -107,7 +110,42 @@ class AddTaskPageState extends State<AddTaskPage> {
                   ),
                 ),
               ],
-            )
+            ),
+            MyTextField(
+                title: "Remind ",
+                hintText: " $selectedRemind minutes early",
+                widget:
+                WidgetDropdownButton(
+ 
+  onChanged: (String? newValue) {
+    setState(() {
+      selectedRemind = int.parse(newValue!);
+    });
+  },
+  selectedValue: selectedRemind.toString(),
+  items: MyData.reminList.map((e) {
+    return DropdownMenuItem<String>(
+      value: e.toString(),
+      child: Text(e.toString()),
+    );
+  }).toList(),
+),       
+                ),
+            MyTextField(
+                title: "Repeat ",
+                hintText: selectedRepeat,
+                widget:WidgetDropdownButton(
+                  onChanged: (String? value) {
+                     setState(() {
+                      selectedRepeat = value!;
+
+                    }); }, items:MyData.repeatedList.map<DropdownMenuItem<String>>((e) {
+                    return DropdownMenuItem<String>(
+                      value: e.toString(),
+                      child: Text(e.toString()),
+                    );
+                  }).toList(), selectedValue: selectedRepeat,)
+                ),
           ]),
         ),
       )),
@@ -147,9 +185,7 @@ class AddTaskPageState extends State<AddTaskPage> {
     }
   }
 
-
-
-  getTimeFromUser({required bool isStartTime})async {
+  getTimeFromUser({required bool isStartTime}) async {
     var pickedTime = await _showTimePicker();
     String formatedTime = pickedTime.format(context);
     if (pickedTime == null) {
@@ -168,9 +204,9 @@ class AddTaskPageState extends State<AddTaskPage> {
   _showTimePicker() {
     return showTimePicker(
       context: context,
-      initialTime: TimeOfDay(hour: int.parse(startTime.split(":")[0]),
-      minute: int.parse(startTime.split(":")[1].split(" ")[0])
-      ),
+      initialTime: TimeOfDay(
+          hour: int.parse(startTime.split(":")[0]),
+          minute: int.parse(startTime.split(":")[1].split(" ")[0])),
       initialEntryMode: TimePickerEntryMode.input,
     );
   }
