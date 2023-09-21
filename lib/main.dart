@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:todo/data_base/data_base.dart';
 import 'package:todo/view/screen.dart/add_task.dart';
 import 'package:todo/view/screen.dart/home_page.dart';
 import 'package:todo/pages_name.dart';
 
-void main() {
+Future<void> main() async {
+   WidgetsFlutterBinding.ensureInitialized();
+  await DataBaseTask.initialDB();
   runApp(const MyApp());
 }
 
@@ -17,13 +20,11 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-     initialRoute:  homePage ,
-     routes: {
-      homePage : (context) =>  HomePage(),
-      addTaskPage : (context) => AddTaskPage(),
-     },
+      initialRoute: homePage,
+      routes: {
+        homePage: (context) => HomePage(),
+        addTaskPage: (context) => AddTaskPage(),
+      },
     );
   }
 }
-
-

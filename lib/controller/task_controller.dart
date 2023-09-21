@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:todo/data_base/data_base.dart';
 import 'package:todo/model/task_model.dart';
 
 class TaskController extends GetxController {
@@ -6,7 +7,7 @@ class TaskController extends GetxController {
     super.onReady();
   }
 
-  Future<void> addTask({TaskModel? taskModel}) {
-    return null;
+  Future<int> addTask( { TaskModel? taskModel}) async {
+    return await DataBaseTask.insertdb(taskModel);
   }
 }

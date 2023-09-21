@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:todo/controller/task_controller.dart';
 import 'package:todo/data/list_data.dart';
 import 'package:todo/model/task_model.dart';
 import 'package:todo/view/widgets/dropdown_widget.dart';
@@ -14,6 +16,7 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class AddTaskPageState extends State<AddTaskPage> {
+    TaskController taskController  = Get.put(TaskController());
   final TextEditingController titleController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
   DateTime selectedDate = DateTime.now();
@@ -24,6 +27,12 @@ class AddTaskPageState extends State<AddTaskPage> {
   int selectedRemind = 5;
   String selectedRepeat = "Nope";
   int selectedColor = 0;
+
+
+  @override
+void initState() {
+  super.initState();
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -293,15 +302,25 @@ class AddTaskPageState extends State<AddTaskPage> {
     }
   }
 
-  addTaskTodb() {
-    TaskModel(
-        title: titleController.text,
-        notes: noteController.text,
-        isCompleted: 0,
-        date: DateFormat('MM-dd-yyyy').format(selectedDate),
-        startTime: startTime,
-        endTime: endTime,
-        remind: selectedRemind,
-        repeat: selectedRepeat, color: selectedColor);
-  }
+  Future<void> addTaskTodb() async {
+  
+    var value = await taskController.addTask(
+        taskModel: TaskModel(
+            title: titleController.text,
+            notes: noteController.text,
+            isCompleted: 0,
+            date: DateFormat('MM-dd-yyyy').format(selectedDate),
+            startTime: startTime,
+            endTime: endTime,
+            remind: selectedRemind,
+            repeat: selectedRepeat,
+            color: selectedColor));
+
+    
+      print(" =====================The task was successfully inserted. =============== $value");
+    
+     
+    
+  
+}
 }

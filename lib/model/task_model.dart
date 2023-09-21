@@ -42,7 +42,6 @@ class TaskModel {
     data['title'] = title;
     data['notes'] = notes;
     data['isCompleted'] = isCompleted;
-
     data['date'] = date;
     data['startTime'] = startTime;
     data['endTime'] = endTime;
