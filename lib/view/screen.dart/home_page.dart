@@ -1,8 +1,10 @@
-import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:todo/controller/task_controller.dart';
 import 'package:todo/pages_name.dart';
+import 'package:todo/view/widgets/date_picker.dart';
 import 'package:todo/view/widgets/elevation_button.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,9 +15,17 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+  TaskController taskController = Get.put(TaskController());
+
   DateTime selectedDate = DateTime.now();
   DateTime now = DateTime.now();
   String formattedDate = DateFormat('EEE, d MMM').format(DateTime.now());
+
+  @override
+  void initState() {
+    super.initState();
+    taskController.getTask();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +53,9 @@ class HomePageState extends State<HomePage> {
               padding: const EdgeInsets.only(top: 8, right: 10, bottom: 8),
               child: ButtonElevationWidget(
                   titel: " + Add Task",
-                  onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                      addTaskPage,
-                    );
+                  onPressed: () async {
+                    await Navigator.pushNamed(context, addTaskPage);
+                    taskController.getTask();
                   }),
             )
           ],
@@ -68,26 +76,37 @@ class HomePageState extends State<HomePage> {
         ),
         Padding(
           padding: const EdgeInsets.only(left: 5, bottom: 8),
-          child: DatePicker(
-            DateTime.now(),
-            height: 100,
-            width: 75,
-            initialSelectedDate: DateTime.now(),
-            selectionColor: Colors.deepPurple,
-            selectedTextColor: Colors.white,
-            daysCount: 200,
+          child: PickerDate(
             dateTextStyle: latoTextStyle(
                 fontSize: 20, fontWeight: FontWeight.w600, color: Colors.grey),
             dayTextStyle: latoTextStyle(
                 fontSize: 16, fontWeight: FontWeight.w500, color: Colors.grey),
             monthTextStyle: latoTextStyle(
                 fontSize: 14, fontWeight: FontWeight.w500, color: Colors.grey),
-            onDateChange: (date) {
+            selectDate: (date) {
               selectedDate = date;
               print("the selected date is $selectedDate");
             },
           ),
         ),
+// show tasks list
+
+        Expanded(
+          child: Obx((() {
+            return ListView.builder(
+                itemCount: taskController.alltasksList.length,
+                itemBuilder: (_, context) {
+                  print(
+                      " items count is ========= ${taskController.alltasksList.length}");
+                  return Container(
+                    height: 100,
+                    width: 250,
+                    color: Colors.amber,
+                    child: Text("hello"),
+                  );
+                });
+          })),
+        )
       ])),
     );
   }

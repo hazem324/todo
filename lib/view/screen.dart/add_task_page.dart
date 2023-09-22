@@ -3,8 +3,9 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:todo/controller/task_controller.dart';
-import 'package:todo/data/list_data.dart';
+import 'package:todo/list/list_data.dart';
 import 'package:todo/model/task_model.dart';
+import 'package:todo/view/widgets/color_selection_widget.dart';
 import 'package:todo/view/widgets/dropdown_widget.dart';
 import 'package:todo/view/widgets/elevation_button.dart';
 import 'package:todo/view/widgets/text_control_field.dart';
@@ -16,7 +17,7 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class AddTaskPageState extends State<AddTaskPage> {
-    TaskController taskController  = Get.put(TaskController());
+  TaskController taskController = Get.put(TaskController());
   final TextEditingController titleController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
   DateTime selectedDate = DateTime.now();
@@ -28,11 +29,11 @@ class AddTaskPageState extends State<AddTaskPage> {
   String selectedRepeat = "Nope";
   int selectedColor = 0;
 
-
   @override
-void initState() {
-  super.initState();
-}
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -163,54 +164,18 @@ void initState() {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const SizedBox(width: 8),
-                        Text(
-                          "Colors",
-                          style: latoTextStyle(
-                              fontSize: 20, fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Wrap(
-                        children: List<Widget>.generate(4, (int index) {
-                      return InkWell(
-                        onTap: () {
-                          setState(() {
-                            selectedColor = index;
-                          });
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: CircleAvatar(
-                            radius: 14,
-                            backgroundColor: index == 0
-                                ? Colors.amber
-                                : index == 1
-                                    ? Colors.pink
-                                    : index == 2
-                                        ? Colors.blueAccent
-                                        : Colors.deepOrangeAccent,
-                            child: selectedColor == index
-                                ? const Icon(
-                                    Icons.done,
-                                    color: Colors.white,
-                                    size: 16,
-                                  )
-                                : Container(),
-                          ),
-                        ),
-                      );
-                    }))
-                  ],
+                ColorSelection(
+                  selectedColorsIndex: selectedColor,
+                  latoStyle:
+                      latoTextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                  onSelectedColors: (index) {
+                    setState(() {
+                      selectedColor = index;
+                    });
+                  },
+                  colors: MyData.color,
                 ),
+
                 ButtonElevationWidget(
                   titel: ' Creat Task ',
                   onPressed: () {
@@ -219,7 +184,7 @@ void initState() {
                   backColor: Colors.purple,
                   textColor: Colors.white,
                   borderColor: Colors.white,
-                )
+                ),
               ],
             )
           ]),
@@ -303,7 +268,6 @@ void initState() {
   }
 
   Future<void> addTaskTodb() async {
-  
     var value = await taskController.addTask(
         taskModel: TaskModel(
             title: titleController.text,
@@ -315,12 +279,7 @@ void initState() {
             remind: selectedRemind,
             repeat: selectedRepeat,
             color: selectedColor));
-
-    
-      print(" =====================The task was successfully inserted. =============== $value");
-    
-     
-    
-  
-}
+    print(
+        " =====================The task was successfully inserted. =============== $value");
+  }
 }
