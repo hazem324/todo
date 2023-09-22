@@ -7,7 +7,6 @@ class DataBaseTask {
   static final String tableName = "taskTable";
 
   static Future<void> initialDB() async {
-    
     if (_bd != null) {
       return;
     }
@@ -20,9 +19,7 @@ class DataBaseTask {
         version: version,
         onCreate: (db, version) {
           print("create a db =================");
-          return db.execute(
-
-'''  
+          return db.execute('''  
 CREATE TABLE "$tableName" (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   title STRING,
@@ -36,10 +33,8 @@ CREATE TABLE "$tableName" (
   repeat STRING
   
 )
-'''
-          );
+''');
         },
-        
       );
     } catch (e) {
       print("data base initial problem $e");
@@ -49,5 +44,10 @@ CREATE TABLE "$tableName" (
   static Future<int> insertdb(TaskModel? taskModel) async {
     print("INSERT METHOD HAS CALLED ");
     return await _bd?.insert(tableName, taskModel!.toJson()) ?? 1;
+  }
+
+  static Future<List<Map<String, dynamic>>> query() async {
+    print("the query method has called            =");
+    return _bd!.query(tableName);
   }
 }
