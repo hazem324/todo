@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -6,6 +7,7 @@ import 'package:todo/controller/task_controller.dart';
 import 'package:todo/pages_name.dart';
 import 'package:todo/view/widgets/date_picker.dart';
 import 'package:todo/view/widgets/elevation_button.dart';
+import 'package:todo/view/widgets/task_container.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -93,18 +95,33 @@ class HomePageState extends State<HomePage> {
 
         Expanded(
           child: Obx((() {
-            return ListView.builder(
-                itemCount: taskController.alltasksList.length,
-                itemBuilder: (_, context) {
-                  print(
-                      " items count is ========= ${taskController.alltasksList.length}");
-                  return Container(
-                    height: 100,
-                    width: 250,
-                    color: Colors.amber,
-                    child: Text("hello"),
-                  );
-                });
+            return AnimationLimiter(
+              child: ListView.builder(
+                  itemCount: taskController.alltasksList.length,
+                  itemBuilder: (context, index) {
+                    print(
+                        " items count is ========= ${taskController.alltasksList.length}");
+                    return AnimationConfiguration.staggeredList(
+
+                      position: index,
+                       duration: const Duration(milliseconds: 400),
+                      child: SlideAnimation(
+                        
+                        child: FadeInAnimation(
+                          child: InkWell(
+                              onTap: () {
+                                taskController
+                                    .deletTask(taskController.alltasksList[index]);
+                                taskController.getTask();
+                              },
+                              child: TaskContainer(
+                                taskModel: taskController.alltasksList[index],
+                              )),
+                        ),
+                      ),
+                    );
+                  }),
+            );
           })),
         )
       ])),

@@ -15,9 +15,14 @@ class TaskController extends GetxController {
 
   // get all tasks from db
 
-   getTask() async {
+  getTask() async {
     List<Map<String, dynamic>> tasks = await DataBaseTask.query();
     alltasksList
         .assignAll(tasks.map((data) => TaskModel.fromJson(data)).toList());
+  }
+
+  deletTask(TaskModel taskModel) {
+    var d = DataBaseTask.delete(taskModel);
+    print(" delet method has called $d");
   }
 }

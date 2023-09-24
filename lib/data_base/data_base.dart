@@ -40,13 +40,18 @@ CREATE TABLE "$tableName" (
       print("data base initial problem $e");
     }
   }
+
   static Future<int> insertdb(TaskModel? taskModel) async {
     print("INSERT METHOD HAS CALLED ");
     return await _bd?.insert(tableName, taskModel!.toJson()) ?? 1;
   }
-  
+
   static Future<List<Map<String, dynamic>>> query() async {
     print("the query method has called            =");
     return _bd!.query(tableName);
+  }
+
+  static  delete(TaskModel taskModel) async {
+  return   await _bd!.delete(tableName, where: 'id=?', whereArgs: [taskModel.id]);
   }
 }
