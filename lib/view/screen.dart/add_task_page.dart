@@ -221,9 +221,6 @@ class AddTaskPageState extends State<AddTaskPage> {
       setState(() {
         selectedDate = pickedDateFirst;
       });
-      String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
-
-      print("Selected date is $formattedDate");
       print("first date is $selectedDate");
     }
   }
