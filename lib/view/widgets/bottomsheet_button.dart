@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class ButtonElevationWidget extends StatelessWidget {
+class BottomButtonElevation extends StatelessWidget {
   final String titel;
-  final Function() onPressed;
+  final int index;
+  final VoidCallback onPressed;
     final Color? backColor;
   final Color? borderColor;
   final Color? textColor;
+ 
 
-  ButtonElevationWidget({required this.titel,
-   required this.onPressed, 
-   this.backColor,this.textColor, this.borderColor});
+  BottomButtonElevation({required this.titel, required this.onPressed, this.backColor,this.textColor, this.borderColor, required this.index });
 
   @override
   Widget build(BuildContext context) {

@@ -51,7 +51,19 @@ CREATE TABLE "$tableName" (
     return _bd!.query(tableName);
   }
 
-  static  delete(TaskModel taskModel) async {
-  return   await _bd!.delete(tableName, where: 'id=?', whereArgs: [taskModel.id]);
+  static delete(TaskModel taskModel) async {
+    return await _bd!
+        .delete(tableName, where: 'id=?', whereArgs: [taskModel.id]);
+  }
+
+  static update(int id) async {
+    return await _bd!.rawQuery(
+      '''
+UPDATE $tableName
+SET isCompleted = ?
+WHERE id = ?
+
+''', [1 , id]
+    );
   }
 }

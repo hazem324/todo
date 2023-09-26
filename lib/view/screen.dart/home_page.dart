@@ -4,7 +4,9 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:todo/controller/task_controller.dart';
+import 'package:todo/model/task_model.dart';
 import 'package:todo/pages_name.dart';
+import 'package:todo/view/widgets/bottomsheet_button.dart';
 import 'package:todo/view/widgets/date_picker.dart';
 import 'package:todo/view/widgets/elevation_button.dart';
 import 'package:todo/view/widgets/task_container.dart';
@@ -55,7 +57,8 @@ class HomePageState extends State<HomePage> {
               padding: const EdgeInsets.only(top: 8, right: 10, bottom: 8),
               child: ButtonElevationWidget(
                   titel: " + Add Task",
-                  onPressed: () async {
+                  onPressed: ()async  {
+                     print("Add Task button pressed");
                     await Navigator.pushNamed(context, addTaskPage);
                     taskController.getTask();
                   }),
@@ -102,16 +105,17 @@ class HomePageState extends State<HomePage> {
                     print(
                         " items count is ========= ${taskController.alltasksList.length}");
                     return AnimationConfiguration.staggeredList(
-
                       position: index,
-                       duration: const Duration(milliseconds: 400),
+                      duration: const Duration(milliseconds: 400),
                       child: SlideAnimation(
-                        
                         child: FadeInAnimation(
                           child: InkWell(
                               onTap: () {
-                                taskController
-                                    .deletTask(taskController.alltasksList[index]);
+                                _modalBottomSheetMenu( index,
+                                  context,
+                                  taskController.alltasksList[index],
+                                );
+                                
                                 taskController.getTask();
                               },
                               child: TaskContainer(
@@ -128,17 +132,95 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  TextStyle latoTextStyle({
-    double fontSize = 16.0,
-    FontWeight fontWeight = FontWeight.w400,
-    Color color = Colors.black,
-  }) {
-    return GoogleFonts.lato(
-      textStyle: TextStyle(
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-        color: color,
-      ),
+  void _modalBottomSheetMenu(
+    int index,
+    BuildContext context,
+    TaskModel taskModel,
+  ) {
+    showModalBottomSheet(  
+      context: context,
+      builder: (builder) {
+        return Container(
+          height: 220,
+          color: Colors.transparent,
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+            ),
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: BottomButtonElevation(
+                    borderColor: Colors.purple,
+                    backColor: Colors.purple,
+                    textColor: Colors.white,
+                    titel: ' Task Completed',
+                    onPressed:
+                     () {
+                      taskController.taskCompletUpDate(
+                          taskController.alltasksList[index].id!);
+                          taskController.getTask();
+                      Navigator.pop(context);
+                    }, index: index, 
+                  ),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: BottomButtonElevation(
+                    backColor: Colors.red,
+                    textColor: Colors.white,
+                    borderColor: Colors.white,
+                    titel: 'Delet Task',
+                    index: index,
+                    onPressed: () {
+                      taskController.deletTask(
+                        taskController.alltasksList[index],
+                      );
+                      taskController.getTask();
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+                const Spacer(), // Add Spacer to take remaining space
+                ButtonElevationWidget(
+                  backColor: Colors.white,
+                  textColor: Colors.purple,
+                  borderColor: Colors.white,
+                  titel: ' Cancel ',
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
+}
+
+TextStyle latoTextStyle({
+  double fontSize = 16.0,
+  FontWeight fontWeight = FontWeight.w400,
+  Color color = Colors.black,
+}) {
+  return GoogleFonts.lato(
+    textStyle: TextStyle(
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      color: color,
+    ),
+  );
 }

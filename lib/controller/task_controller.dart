@@ -25,4 +25,8 @@ class TaskController extends GetxController {
     var d = DataBaseTask.delete(taskModel);
     print(" delet method has called $d");
   }
+
+  void taskCompletUpDate(int id) {
+    DataBaseTask.update(id);
+  }
 }
