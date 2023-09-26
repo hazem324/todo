@@ -3,7 +3,7 @@ import 'package:todo/model/task_model.dart';
 
 class DataBaseTask {
   static Database? _bd;
-  static final int version = 2;
+  static final int version = 8;
   static final String tableName = "taskTable";
 
   static Future<void> initialDB() async {

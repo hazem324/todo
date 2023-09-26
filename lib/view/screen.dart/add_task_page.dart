@@ -25,6 +25,7 @@ class AddTaskPageState extends State<AddTaskPage> {
   String endTime = DateFormat("hh:mm a")
       .format(DateTime.now().add(const Duration(minutes: 5)))
       .toString();
+  String selectedDateForma =DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(); 
   int selectedRemind = 5;
   String selectedRepeat = "Nope";
   int selectedColor = 0;
@@ -75,7 +76,7 @@ class AddTaskPageState extends State<AddTaskPage> {
             MyTextField(
               title: 'Date',
               hintText:
-                  DateFormat('MM-dd-yyyy').format(selectedDate).toString(),
+                  selectedDateForma,
               widget: IconButton(
                 onPressed: () {
                   takeDateFromUser();
@@ -175,7 +176,6 @@ class AddTaskPageState extends State<AddTaskPage> {
                   },
                   colors: MyData.color,
                 ),
-
                 ButtonElevationWidget(
                   titel: ' Creat Task ',
                   onPressed: () {
@@ -221,7 +221,9 @@ class AddTaskPageState extends State<AddTaskPage> {
       setState(() {
         selectedDate = pickedDateFirst;
       });
+      String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
 
+      print("Selected date is $formattedDate");
       print("first date is $selectedDate");
     }
   }
@@ -273,7 +275,7 @@ class AddTaskPageState extends State<AddTaskPage> {
             title: titleController.text,
             notes: noteController.text,
             isCompleted: 0,
-            date: DateFormat('MM-dd-yyyy').format(selectedDate),
+            date: DateFormat('yyyy-MM-dd').format(selectedDate),
             startTime: startTime,
             endTime: endTime,
             remind: selectedRemind,

@@ -9,6 +9,7 @@ import 'package:todo/pages_name.dart';
 import 'package:todo/view/widgets/bottomsheet_button.dart';
 import 'package:todo/view/widgets/date_picker.dart';
 import 'package:todo/view/widgets/elevation_button.dart';
+import 'package:todo/view/widgets/svg_container.dart';
 import 'package:todo/view/widgets/task_container.dart';
 
 class HomePage extends StatefulWidget {
@@ -57,8 +58,8 @@ class HomePageState extends State<HomePage> {
               padding: const EdgeInsets.only(top: 8, right: 10, bottom: 8),
               child: ButtonElevationWidget(
                   titel: " + Add Task",
-                  onPressed: ()async  {
-                     print("Add Task button pressed");
+                  onPressed: () async {
+                    print("Add Task button pressed");
                     await Navigator.pushNamed(context, addTaskPage);
                     taskController.getTask();
                   }),
@@ -90,7 +91,11 @@ class HomePageState extends State<HomePage> {
                 fontSize: 14, fontWeight: FontWeight.w500, color: Colors.grey),
             selectDate: (date) {
               selectedDate = date;
-              print("the selected date is $selectedDate");
+             
+              String formattedselectedDate =
+                  DateFormat('yyyy-MM-dd').format(selectedDate);
+              print("the selected date is $formattedselectedDate");
+              taskController.getTask(); 
             },
           ),
         ),
@@ -99,32 +104,71 @@ class HomePageState extends State<HomePage> {
         Expanded(
           child: Obx((() {
             return AnimationLimiter(
-              child: ListView.builder(
-                  itemCount: taskController.alltasksList.length,
-                  itemBuilder: (context, index) {
-                    print(
-                        " items count is ========= ${taskController.alltasksList.length}");
-                    return AnimationConfiguration.staggeredList(
-                      position: index,
-                      duration: const Duration(milliseconds: 400),
-                      child: SlideAnimation(
-                        child: FadeInAnimation(
-                          child: InkWell(
-                              onTap: () {
-                                _modalBottomSheetMenu( index,
-                                  context,
-                                  taskController.alltasksList[index],
-                                );
-                                
-                                taskController.getTask();
-                              },
-                              child: TaskContainer(
-                                taskModel: taskController.alltasksList[index],
-                              )),
-                        ),
-                      ),
-                    );
-                  }),
+              child: taskController.alltasksList.isEmpty
+                  ? SvgContainer()
+                  : ListView.builder(
+                      itemCount: taskController.alltasksList.length,
+                      itemBuilder: (context, index) {
+                        var task = taskController.alltasksList[index];
+                        taskController.alltasksList[index];
+                        print(task.toJson());
+                        print(
+                            " items count is ========= ${taskController.alltasksList.length}");
+                        if (task.repeat == "Daily"  ) {
+                          return AnimationConfiguration.staggeredList(
+                            position: index,
+                            duration: const Duration(milliseconds: 400),
+                            child: SlideAnimation(
+                              child: FadeInAnimation(
+                                child: InkWell(
+                                    onTap: () {
+                                      _modalBottomSheetMenu(
+                                        index,
+                                        context,
+                                        taskController.alltasksList[index],
+                                      );
+
+                                      taskController.getTask();
+                                    },
+                                    child: TaskContainer(
+                                      taskModel:
+                                          taskController.alltasksList[index],
+                                    )),
+                              ),
+                            ),
+                          );
+                        }
+                        if (taskController.alltasksList[index].date ==
+                            DateFormat('yyyy-MM-dd').format(selectedDate)) {
+                              print(" the condition it's true select is ${DateFormat('yyyy-MM-dd').format(selectedDate)} ");
+                               taskController.getTask;
+                          print(" the condition it's taskcontroler ${taskController.alltasksList[index].date} ");
+                          return AnimationConfiguration.staggeredList(
+                            position: index,
+                            duration: const Duration(milliseconds: 400),
+                            child: SlideAnimation(
+                              child: FadeInAnimation(
+                                child: InkWell(
+                                    onTap: () {
+                                      _modalBottomSheetMenu(
+                                        index,
+                                        context,
+                                        taskController.alltasksList[index],
+                                      );
+
+                                      taskController.getTask();
+                                    },
+                                    child: TaskContainer(
+                                      taskModel:
+                                          taskController.alltasksList[index],
+                                    )),
+                              ),
+                            ),
+                          );
+                        } else {
+                          return Container();
+                        }
+                      }),
             );
           })),
         )
@@ -137,7 +181,8 @@ class HomePageState extends State<HomePage> {
     BuildContext context,
     TaskModel taskModel,
   ) {
-    showModalBottomSheet(  
+    int? isCompleted = taskController.alltasksList[index].isCompleted;
+    showModalBottomSheet(
       context: context,
       builder: (builder) {
         return Container(
@@ -156,20 +201,27 @@ class HomePageState extends State<HomePage> {
                 const SizedBox(
                   height: 10,
                 ),
+
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: BottomButtonElevation(
-                    borderColor: Colors.purple,
-                    backColor: Colors.purple,
+                    borderColor: isCompleted == 0 ? Colors.purple : Colors.grey,
+                    backColor: isCompleted == 0 ? Colors.purple : Colors.grey,
                     textColor: Colors.white,
-                    titel: ' Task Completed',
-                    onPressed:
-                     () {
-                      taskController.taskCompletUpDate(
-                          taskController.alltasksList[index].id!);
-                          taskController.getTask();
-                      Navigator.pop(context);
-                    }, index: index, 
+                    titel: isCompleted == 0
+                        ? ' Task Completed '
+                        : "Task already completed ",
+                    onPressed: isCompleted == 0
+                        ? () {
+                            taskController.taskCompletUpDate(
+                                taskController.alltasksList[index].id!);
+                            taskController.getTask();
+                            Navigator.pop(context);
+                          }
+                        : () {
+                            Navigator.pop(context);
+                          },
+                    index: index,
                   ),
                 ),
                 const SizedBox(
