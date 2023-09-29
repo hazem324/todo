@@ -47,7 +47,7 @@ class TaskModel {
     data['endTime'] = endTime;
     data['remind'] = remind;
     data["repeat"] = repeat;
-     data["color"] = color;
+    data["color"] = color;
     return data;
   }
 }

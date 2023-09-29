@@ -46,7 +46,7 @@ class TaskContainer extends StatelessWidget {
                     ),
                     SizedBox(width: 4),
                     Text(
-                      "${taskModel.startTime} - ${taskModel.endTime}",
+                      "${taskModel.startTime.toString()} - ${taskModel.endTime.toString()}",
                       style: GoogleFonts.lato(
                         textStyle:
                             TextStyle(fontSize: 13, color: Colors.grey[100]),
@@ -56,7 +56,7 @@ class TaskContainer extends StatelessWidget {
                 ),
                 SizedBox(height: 12),
                 Text(
-                  taskModel.notes ?? "",
+                  taskModel.notes?? "",
                   style: GoogleFonts.lato(
                     textStyle: TextStyle(fontSize: 15, color: Colors.grey[100]),
                   ),
