@@ -3,7 +3,7 @@ import 'package:todo/model/task_model.dart';
 
 class DataBaseTask {
   static Database? _bd;
-  static final int version = 8;
+  static final int version = 12;
   static final String tableName = "taskTable";
 
   static Future<void> initialDB() async {
@@ -57,13 +57,11 @@ CREATE TABLE "$tableName" (
   }
 
   static update(int id) async {
-    return await _bd!.rawQuery(
-      '''
+    return await _bd!.rawQuery('''
 UPDATE $tableName
 SET isCompleted = ?
 WHERE id = ?
 
-''', [1 , id]
-    );
+''', [1, id]);
   }
 }

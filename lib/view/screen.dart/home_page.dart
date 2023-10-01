@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:todo/controller/task_controller.dart';
 import 'package:todo/model/task_model.dart';
+import 'package:todo/notification_service.dart';
 import 'package:todo/pages_name.dart';
 import 'package:todo/view/widgets/bottomsheet_button.dart';
 import 'package:todo/view/widgets/date_picker.dart';
@@ -25,11 +26,13 @@ class HomePageState extends State<HomePage> {
   DateTime selectedDate = DateTime.now();
   DateTime now = DateTime.now();
   String formattedDate = DateFormat('EEE, d MMM').format(DateTime.now());
-
+  var localNotifications;
   @override
   void initState() {
     super.initState();
     taskController.getTask();
+    localNotifications = LocalNotifications();
+    localNotifications.init();
   }
 
   @override
@@ -91,11 +94,11 @@ class HomePageState extends State<HomePage> {
                 fontSize: 14, fontWeight: FontWeight.w500, color: Colors.grey),
             selectDate: (date) {
               selectedDate = date;
-             
+
               String formattedselectedDate =
                   DateFormat('yyyy-MM-dd').format(selectedDate);
               print("the selected date is $formattedselectedDate");
-              taskController.getTask(); 
+              taskController.getTask();
             },
           ),
         ),
@@ -114,7 +117,7 @@ class HomePageState extends State<HomePage> {
                         print(task.toJson());
                         print(
                             " items count is ========= ${taskController.alltasksList.length}");
-                        if (task.repeat == "Daily"  ) {
+                        if (task.repeat == "Daily") {
                           return AnimationConfiguration.staggeredList(
                             position: index,
                             duration: const Duration(milliseconds: 400),
@@ -140,9 +143,30 @@ class HomePageState extends State<HomePage> {
                         }
                         if (taskController.alltasksList[index].date ==
                             DateFormat('yyyy-MM-dd').format(selectedDate)) {
-                              print(" the condition it's true select is ${DateFormat('yyyy-MM-dd').format(selectedDate)} ");
-                               taskController.getTask;
-                          print(" the condition it's taskcontroler ${taskController.alltasksList[index].date} ");
+                          print(
+                              " the condition it's true select is ${DateFormat('yyyy-MM-dd').format(selectedDate)} ");
+                          taskController.getTask;
+
+                          String startTimeString = task.startTime.toString();
+// Replace non-breaking space (U+200B) and other whitespace characters with regular spaces
+                          startTimeString = startTimeString
+                              .replaceAll(RegExp(r'\s'), ' ')
+                              .trim();
+
+                          DateTime date =
+                              DateFormat("HH:mm").parse(startTimeString);
+                          print("/*/*/**/*/*/*/*/* $date");
+
+                          var myTime = DateFormat("HH:mm").format(date);
+                          print("/*/*/**/*/*/*/*/* $myTime");
+                          print(
+                              " the condition it's taskcontroler ${taskController.alltasksList[index].date} ");
+                          print("showScheduleNotification called ");
+                          localNotifications.showScheduleNotification(
+                              int.parse(myTime.split(":")[0]),
+                              int.parse(myTime.split(":")[1]),
+                              task);
+
                           return AnimationConfiguration.staggeredList(
                             position: index,
                             duration: const Duration(milliseconds: 400),
