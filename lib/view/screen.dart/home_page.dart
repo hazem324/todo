@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:todo/controller/task_controller.dart';
 import 'package:todo/model/task_model.dart';
-import 'package:todo/notification_service.dart';
+import 'package:todo/class/notification_service.dart';
 import 'package:todo/pages_name.dart';
 import 'package:todo/view/widgets/bottomsheet_button.dart';
 import 'package:todo/view/widgets/date_picker.dart';
@@ -152,11 +152,8 @@ class HomePageState extends State<HomePage> {
                           startTimeString = startTimeString
                               .replaceAll(RegExp(r'\s'), ' ')
                               .trim();
-
                           DateTime date =
                               DateFormat("HH:mm").parse(startTimeString);
-                          print("/*/*/**/*/*/*/*/* $date");
-
                           var myTime = DateFormat("HH:mm").format(date);
                           print("/*/*/**/*/*/*/*/* $myTime");
                           print(
